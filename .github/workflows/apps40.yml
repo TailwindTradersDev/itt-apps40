@@ -3,11 +3,11 @@ on: [push]
 name: twt-full-cicd
 
 env:
-  resourceGroup: twt2021jd
+  resourceGroup: tailwind
   location: eastus
-  SESSION_CODE: ignite2021
-  USER_ID: jessde
-  subName: "ca-jessde-demo-test"
+  SESSION_CODE: ado50
+  USER_ID: stmuraws
+  subName: "ca-stmuraws-demo-test"
 
   # tailwind deployment
   tailwindBackendGit: https://github.com/jldeen/TailwindTraders-Backend.git
@@ -24,7 +24,7 @@ env:
 
 jobs:
   deployInfra:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       # checkout branch
       - name: git checkout main branch
@@ -170,7 +170,7 @@ jobs:
           EOF
 
   buildImages:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: deployInfra
     steps:
       # log into Azure
@@ -293,7 +293,7 @@ jobs:
           docker push $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
   deployMicroservices:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: buildImages
     env:
       nameSpace: twt
