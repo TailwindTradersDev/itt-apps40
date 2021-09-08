@@ -312,6 +312,10 @@ jobs:
 
           cd $GITHUB_WORKSPACE/TailwindTraders-Backend && git checkout main
 
+      - name: "Create Helm gvalues file"
+        run: |
+          pwsh $tailwindChartValuesScript -resourceGroup $resourceGroup -outputFile $GITHUB_WORKSPACE/$tailwindChartValues
+
       - name: "configure deployment environment"
         run: |
           # set for this step
