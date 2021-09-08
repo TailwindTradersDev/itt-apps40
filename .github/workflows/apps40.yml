@@ -326,6 +326,7 @@ jobs:
         run: |
           ls -la
           # twt login
+          az aks get-credentials --name $AKS_CLUSTER --resource-group $resourceGroup
           helm upgrade --install my-tt-login -f $tailwindChartValues --namespace=$nameSpace --set ingress.hosts={$INGRESS} --set image.repository=$CONTAINER_REGISTRY/login.api --set image.tag=$GITHUB_SHA --set inf.storage.profileimages=${pictures}profiles-list $tailwindCharts/login-api
 
       - name: "helm install product api"
