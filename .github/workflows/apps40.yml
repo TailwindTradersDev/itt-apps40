@@ -310,7 +310,15 @@ jobs:
 
           git clone $tailwindBackendGit
 
-          cd $GITHUB_WORKSPACE/TailwindTraders-Backend && git checkout main
+          git -C TailwindTraders-Backend checkout main
+
+      - name: "Checkout TailwindTraders Frontend Source"
+        run: |
+          rm -rf TailwindTraders-Website
+
+          git clone $tailwindFrontendGit
+
+          git -C TailwindTraders-Website checkout main
 
       - name: "Create Helm gvalues file"
         run: |
@@ -332,7 +340,7 @@ jobs:
 
           echo "pictures=$(az storage account list -g $resourceGroup --query [0].primaryEndpoints.blob -o tsv)" >> $GITHUB_ENV
           
-          git -C TailwindTraders-Backend checkout main
+          #
 
       - name: "helm install login api"
         run: |
@@ -391,10 +399,12 @@ jobs:
 
           # helm upgrade --install my-tt-webbff -f $tailwindChartValues --namespace=$nameSpace --set ingress.hosts={$INGRESS} --set image.repository=neilpeterson/webapigw --set image.tag=v2 $tailwindCharts/webbff --set B2C.Authority=none --set B2C.B2CIssuer=none
 
+          git clone $tailwindFrontendGit
+
       - name: "helm install web frontend"
         run: |
           # twt web
-          helm upgrade --install web -f TailwindTraders-Website/Deploy/helm/gvalues.yaml -f TailwindTraders-Website/Deploy/helm/values.b2c.yaml --namespace=$nameSpace --set ingress.protocol=http --set ingress.hosts={$INGRESS} --set image.repository=$CONTAINER_REGISTRY/web --set image.tag=$GITHUB_SHA TailwindTraders-Website/Deploy/helm/web/
+          helm upgrade --install web -f TailwindTraders-Website/TailwindTraders.Website/Deploy/helm/gvalues.yaml -f TailwindTraders-Website/TailwindTraders.Website/Deploy/helm/values.b2c.yaml --namespace=$nameSpace --set ingress.protocol=http --set ingress.hosts={$INGRESS} --set image.repository=$CONTAINER_REGISTRY/web --set image.tag=$GITHUB_SHA TailwindTraders-Website/Deploy/helm/web/
 
       - name: "Label all pods for network policy"
         run: |
