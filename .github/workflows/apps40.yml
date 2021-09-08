@@ -10,8 +10,8 @@ env:
   subName: "ca-stmuraws-demo-test"
 
   # tailwind deployment
-  tailwindBackendGit: https://github.com/jldeen/TailwindTraders-Backend.git
-  tailwindFrontendGit: https://github.com/jldeen/TailwindTraders-Website.git
+  tailwindBackendGit: https://github.com/TailwindTradersDev/TailwindTraders-Backend.git
+  tailwindFrontendGit: https://github.com/TailwindTradersDev/TailwindTraders-Website.git
   tailwindInfrastructure: deployment.json
   tailwindCharts: TailwindTraders-Backend/Deploy/helm
   tailwindChartValuesScript: TailwindTraders-Backend/Deploy/powershell/Generate-Config.ps1
@@ -80,7 +80,7 @@ jobs:
           az deployment group create --resource-group $resourceGroup --template-file $tailwindInfrastructure \
             --parameters servicePrincipalId=$azureClientID servicePrincipalSecret=${{ secrets.CLIENT_SECRET }} \
             sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=${{ secrets.sqlServePassword }} \
-            aksVersion=1.18.10 pgversion=10 vnetSubnetID=$vnetID
+            aksVersion=1.21.2 pgversion=10 vnetSubnetID=$vnetID
           
           echo "AKS_CLUSTER=$(az aks list --resource-group $resourceGroup --query [0].name -o tsv)" >> $GITHUB_ENV
 
