@@ -3,7 +3,7 @@ on: [push]
 name: twt-full-cicd
 
 env:
-  resourceGroup: tailwind
+  resourceGroup: twt
   location: eastus
   SESSION_CODE: ado50
   USER_ID: stmuraws
