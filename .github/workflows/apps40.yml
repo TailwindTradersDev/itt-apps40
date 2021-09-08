@@ -399,8 +399,6 @@ jobs:
 
           # helm upgrade --install my-tt-webbff -f $tailwindChartValues --namespace=$nameSpace --set ingress.hosts={$INGRESS} --set image.repository=neilpeterson/webapigw --set image.tag=v2 $tailwindCharts/webbff --set B2C.Authority=none --set B2C.B2CIssuer=none
 
-          git clone $tailwindFrontendGit
-
       - name: "helm install web frontend"
         run: |
           # twt web
