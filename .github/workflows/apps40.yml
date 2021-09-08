@@ -288,7 +288,7 @@ jobs:
 
           cd $GITHUB_WORKSPACE/TailwindTraders-Website && git checkout main
 
-          docker build $GITHUB_WORKSPACE/TailwindTraders-Website/Source/Tailwind.Traders.Web/ -t $CONTAINER_REGISTRY/web:$GITHUB_SHA
+          docker build $GITHUB_WORKSPACE/TailwindTraders-Website/TailwindTraders.Website/Source/Tailwind.Traders.Web -t $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
           docker push $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
