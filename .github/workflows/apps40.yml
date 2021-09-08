@@ -73,7 +73,7 @@ jobs:
       # Deploy backend infrastructure
       - name: "Setup Backend Infra"
         env:
-          azureClientID: c9d0658b-81cc-40a7-bea6-6993fa5f2373
+          azureClientID: 5ee832ef-89ba-44db-9118-2602faaa9204
         run: |
           vnetID=$(az network vnet subnet show --resource-group $resourceGroup --vnet-name k8sVNet --name k8sSubnet --query id -o tsv)
 
