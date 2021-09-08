@@ -304,6 +304,14 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: "Checkout TailwindTraders Backend Source"
+        run: |
+          rm -rf TailwindTraders-Backend
+
+          git clone $tailwindBackendGit
+
+          cd $GITHUB_WORKSPACE/TailwindTraders-Backend && git checkout main
+
       - name: "configure deployment environment"
         run: |
           # set for this step
@@ -319,7 +327,7 @@ jobs:
           echo "CONTAINER_REGISTRY=$(az acr list -g $resourceGroup -o tsv --query [0].loginServer)" >> $GITHUB_ENV
 
           echo "pictures=$(az storage account list -g $resourceGroup --query [0].primaryEndpoints.blob -o tsv)" >> $GITHUB_ENV
-
+          
           git -C TailwindTraders-Backend checkout main
 
       - name: "helm install login api"
