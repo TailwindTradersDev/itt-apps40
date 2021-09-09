@@ -24,7 +24,7 @@ env:
 
 jobs:
   # deployInfra:
-  #   runs-on: ubuntu-latest
+  #   runs-on: self-hosted
   #   steps:
   #     # checkout branch
   #     - name: git checkout main branch
@@ -170,7 +170,7 @@ jobs:
   #         EOF
 
   buildImages:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     #needs: deployInfra
     steps:
       # log into Azure
@@ -291,7 +291,7 @@ jobs:
           docker push $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
   deployMicroservices:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: buildImages
     env:
       nameSpace: twt
