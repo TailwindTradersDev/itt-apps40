@@ -169,130 +169,130 @@ jobs:
   #           namespace: $nameSpace
   #         EOF
 
-  # buildImages:
-  #   runs-on: ubuntu-latest
-  #   needs: deployInfra
-  #   steps:
-  #     # log into Azure
-  #     - name: "Login via Azure CLI"
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+  buildImages:
+    runs-on: ubuntu-latest
+    #needs: deployInfra
+    steps:
+      # log into Azure
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-  #     # checkout branch
-  #     - name: git checkout main branch
-  #       uses: actions/checkout@v2
+      # checkout branch
+      - name: git checkout main branch
+        uses: actions/checkout@v2
 
-  #     - name: "Checkout TailwindTraders Frontend Source"
-  #       run: |
-  #         rm -rf TailwindTraders-Website
+      - name: "Checkout TailwindTraders Frontend Source"
+        run: |
+          rm -rf TailwindTraders-Website
 
-  #         git clone $tailwindFrontendGit
+          git clone $tailwindFrontendGit
 
-  #         git -C TailwindTraders-Website checkout main
+          git -C TailwindTraders-Website checkout main
 
-  #     - name: "Checkout TailwindTraders Backend Source"
-  #       run: |
-  #         rm -rf TailwindTraders-Backend
+      - name: "Checkout TailwindTraders Backend Source"
+        run: |
+          rm -rf TailwindTraders-Backend
 
-  #         git clone $tailwindBackendGit
+          git clone $tailwindBackendGit
 
-  #         cd $GITHUB_WORKSPACE/TailwindTraders-Backend && git checkout main
+          cd $GITHUB_WORKSPACE/TailwindTraders-Backend && git checkout main
 
-  #     - name: "Get ACR Container Information"
-  #       run: |
-  #         echo "Retrieving Container Registry info..."
+      - name: "Get ACR Container Information"
+        run: |
+          echo "Retrieving Container Registry info..."
 
-  #         acrName=$(az acr list -g $resourceGroup -o tsv --query [0].name)
-  #         CONTAINER_REGISTRY=$(az acr list -g $resourceGroup -o tsv --query [0].loginServer)
+          acrName=$(az acr list -g $resourceGroup -o tsv --query [0].name)
+          CONTAINER_REGISTRY=$(az acr list -g $resourceGroup -o tsv --query [0].loginServer)
 
-  #         # acr/container registry variables
-  #         echo "CONTAINER_REGISTRY=$(az acr list -g $resourceGroup -o tsv --query [0].loginServer)" >> $GITHUB_ENV
+          # acr/container registry variables
+          echo "CONTAINER_REGISTRY=$(az acr list -g $resourceGroup -o tsv --query [0].loginServer)" >> $GITHUB_ENV
 
-  #         echo "REGISTRY_USERNAME=$(az acr credential show -n $acrName --query username -o tsv)" >> $GITHUB_ENV
-  #         echo "REGISTRY_PASSWORD=$(az acr credential show -n $acrName -o tsv --query passwords[0].value)" >> $GITHUB_ENV
+          echo "REGISTRY_USERNAME=$(az acr credential show -n $acrName --query username -o tsv)" >> $GITHUB_ENV
+          echo "REGISTRY_PASSWORD=$(az acr credential show -n $acrName -o tsv --query passwords[0].value)" >> $GITHUB_ENV
 
-  #         echo "dPath=$GITHUB_WORKSPACE/TailwindTraders-Backend/Source" >> $GITHUB_ENV
+          echo "dPath=$GITHUB_WORKSPACE/TailwindTraders-Backend/Source" >> $GITHUB_ENV
 
-  #         echo "pictures=$(az storage account list -g $resourceGroup --query [0].primaryEndpoints.blob -o tsv)" >> $GITHUB_ENV
+          echo "pictures=$(az storage account list -g $resourceGroup --query [0].primaryEndpoints.blob -o tsv)" >> $GITHUB_ENV
 
-  #     # docker login
-  #     - name: "docker login"
-  #       uses: azure/docker-login@v1
-  #       with:
-  #         login-server: ${{ env.CONTAINER_REGISTRY }}
-  #         username: ${{ env.REGISTRY_USERNAME }}
-  #         password: ${{ env.REGISTRY_PASSWORD }}
+      # docker login
+      - name: "docker login"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
-  #     - name: "build/push cart.api"
-  #       run: |
-  #         docker build $dPath/Services/Tailwind.Traders.Cart.Api/ -t $CONTAINER_REGISTRY/cart.api:$GITHUB_SHA
+      - name: "build/push cart.api"
+        run: |
+          docker build $dPath/Services/Tailwind.Traders.Cart.Api/ -t $CONTAINER_REGISTRY/cart.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/cart.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/cart.api:$GITHUB_SHA
 
-  #     - name: "build/push product.api"
-  #       run: |
-  #         docker build -f $dPath/Services/Tailwind.Traders.Product.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/product.api:$GITHUB_SHA
+      - name: "build/push product.api"
+        run: |
+          docker build -f $dPath/Services/Tailwind.Traders.Product.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/product.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/product.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/product.api:$GITHUB_SHA
 
-  #     - name: "build/push profile.api"
-  #       run: |
-  #         docker build -f $dPath/Services/Tailwind.Traders.Profile.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/profile.api:$GITHUB_SHA
+      - name: "build/push profile.api"
+        run: |
+          docker build -f $dPath/Services/Tailwind.Traders.Profile.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/profile.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/profile.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/profile.api:$GITHUB_SHA
 
-  #     - name: "build/push login.api"
-  #       run: |
-  #         docker build -f $dPath/Services/Tailwind.Traders.Login.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/login.api:$GITHUB_SHA
+      - name: "build/push login.api"
+        run: |
+          docker build -f $dPath/Services/Tailwind.Traders.Login.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/login.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/login.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/login.api:$GITHUB_SHA
 
-  #     - name: "build/push coupon.api"
-  #       run: |
-  #         docker build $dPath/Services/Tailwind.Traders.Coupon.Api/ -t $CONTAINER_REGISTRY/coupon.api:$GITHUB_SHA
+      - name: "build/push coupon.api"
+        run: |
+          docker build $dPath/Services/Tailwind.Traders.Coupon.Api/ -t $CONTAINER_REGISTRY/coupon.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/coupon.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/coupon.api:$GITHUB_SHA
 
-  #     - name: "build/push popular-product.api"
-  #       run: |
-  #         docker build -f $dPath/Services/Tailwind.Traders.PopularProduct.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/popular-product.api:$GITHUB_SHA
+      - name: "build/push popular-product.api"
+        run: |
+          docker build -f $dPath/Services/Tailwind.Traders.PopularProduct.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/popular-product.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/popular-product.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/popular-product.api:$GITHUB_SHA
 
-  #     - name: "build/push stock.api"
-  #       run: |
-  #         docker build $dPath/Services/Tailwind.Traders.Stock.Api/ -t $CONTAINER_REGISTRY/stock.api:$GITHUB_SHA
+      - name: "build/push stock.api"
+        run: |
+          docker build $dPath/Services/Tailwind.Traders.Stock.Api/ -t $CONTAINER_REGISTRY/stock.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/stock.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/stock.api:$GITHUB_SHA
 
-  #     - name: "build/push image-classifier.api"
-  #       run: |
-  #         docker build -f $dPath/Services/Tailwind.Traders.ImageClassifier.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/image-classifier.api:$GITHUB_SHA
+      - name: "build/push image-classifier.api"
+        run: |
+          docker build -f $dPath/Services/Tailwind.Traders.ImageClassifier.Api/Dockerfile $dPath -t $CONTAINER_REGISTRY/image-classifier.api:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/image-classifier.api:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/image-classifier.api:$GITHUB_SHA
 
-  #     - name: "build/push mobileapigw"
-  #       run: |
-  #         docker build -f $dPath/ApiGWs/Tailwind.Traders.Bff/Dockerfile $dPath -t $CONTAINER_REGISTRY/mobileapigw:$GITHUB_SHA
+      - name: "build/push mobileapigw"
+        run: |
+          docker build -f $dPath/ApiGWs/Tailwind.Traders.Bff/Dockerfile $dPath -t $CONTAINER_REGISTRY/mobileapigw:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/mobileapigw:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/mobileapigw:$GITHUB_SHA
 
-  #     - name: "build/push webapigw"
-  #       run: |
-  #         docker build -f $dPath/ApiGWs/Tailwind.Traders.WebBff/Dockerfile $dPath -t $CONTAINER_REGISTRY/webapigw:$GITHUB_SHA
+      - name: "build/push webapigw"
+        run: |
+          docker build -f $dPath/ApiGWs/Tailwind.Traders.WebBff/Dockerfile $dPath -t $CONTAINER_REGISTRY/webapigw:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/webapigw:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/webapigw:$GITHUB_SHA
 
-  #     - name: "build/push web frontend"
-  #       run: |
-  #         docker build $GITHUB_WORKSPACE/TailwindTraders-Website/TailwindTraders.Website/Source/Tailwind.Traders.Web -t $CONTAINER_REGISTRY/web:$GITHUB_SHA
+      - name: "build/push web frontend"
+        run: |
+          docker build $GITHUB_WORKSPACE/TailwindTraders-Website/TailwindTraders.Website/Source/Tailwind.Traders.Web -t $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
-  #         docker push $CONTAINER_REGISTRY/web:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/web:$GITHUB_SHA
 
   deployMicroservices:
     runs-on: ubuntu-latest
- #   needs: buildImages
+    needs: buildImages
     env:
       nameSpace: twt
     steps:
