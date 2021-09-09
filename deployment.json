@@ -113,7 +113,7 @@
         "location": "[resourceGroup().location]",
         "tags": {},
         "properties": {
-          "nodeResourceGroup": "twtcluster",
+          "nodeResourceGroup": "[concat(resourceGroup().name, 'cluster')]",
           "kubernetesVersion": "[parameters('aksVersion')]",
           "enableRBAC": true,
           "dnsPrefix": "[variables('aks_name')]",

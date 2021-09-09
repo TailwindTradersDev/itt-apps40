@@ -3,7 +3,7 @@ on: [push]
 name: twt-full-cicd
 
 env:
-  resourceGroup: tailwind
+  resourceGroup: twt2
   location: eastus
   SESSION_CODE: ado50
   USER_ID: stmuraws
@@ -80,7 +80,7 @@ jobs:
           az deployment group create --resource-group $resourceGroup --template-file $tailwindInfrastructure \
             --parameters servicePrincipalId=$azureClientID servicePrincipalSecret=${{ secrets.CLIENT_SECRET }} \
             sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=${{ secrets.sqlServePassword }} \
-            aksVersion=1.21.2 pgversion=10 vnetSubnetID=$vnetID
+            aksVersion=1.18.17 pgversion=10 vnetSubnetID=$vnetID
           
           echo "AKS_CLUSTER=$(az aks list --resource-group $resourceGroup --query [0].name -o tsv)" >> $GITHUB_ENV
 
@@ -318,7 +318,7 @@ jobs:
 
       - name: "Create Helm gvalues file"
         run: |
-          pwsh $tailwindChartValuesScript -ingressClass nginx -resourceGroup $resourceGroup -outputFile $GITHUB_WORKSPACE/$tailwindChartValues
+          pwsh $tailwindChartValuesScript -resourceGroup $resourceGroup -outputFile $GITHUB_WORKSPACE/$tailwindChartValues
 
       - name: "configure deployment environment"
         run: |
